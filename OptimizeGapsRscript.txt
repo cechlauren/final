@@ -1,0 +1,13 @@
+setwd("/Users/lcech/Desktop/UCSF/Winter/BMI203")
+gapData <- read_table2("gapPenalties.txt") #needed to duplicate first row bc got readr excluded it...
+colnames(gapData) <- c("GapOpeningCost", "GapExtendingCost", "FalsePositiveRate")
+library(ggplot2)
+ggplot(data=gapData, aes(x=GapOpeningCost, y=GapExtendingCost, fill=FalsePositiveRate)) + 
+  geom_raster(aes(fill = FalsePositiveRate))+
+  theme_classic()+
+  ggsave("gapData.pdf", path = "/Users/lcech/Desktop/UCSF/Winter/BMI203")
+
+gapData[gapData$FalsePositiveRate == min(gapData$FalsePositiveRate),]
+
+
+
