@@ -66,12 +66,18 @@ The function that produces the reconstruction is here [test_auto.py](https://git
 The input for this autoencoder was as an 8x8 identity matrix made using 
 <img src="8by8code.png" /><br />
 
-and producing
+which makes this
+
 <img src="8by8.png" /><br />
 
 If you see nothing, see:
 [8by8code.png](https://github.com/cechlauren/final/blob/master/8by8code.png) and
 [8by8.png](https://github.com/cechlauren/final/blob/master/8by8.png).
+
+Then the autoencoder vectorizes (ie. reduces the dimension of) the input in a bitwise fashion for the hidden layer(pretty much all of the work is done for the autoencoder already!). 
+
+Then that hidden, reduced encoding is processed by the decoding layer to give an output like the following:
+
 
 ## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
 
