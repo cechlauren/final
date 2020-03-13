@@ -18,9 +18,9 @@ Contains: autoencoder and predictions for RAP1 binding sites.
 │   └── train.py
 ├── test
 │    └── test_auto.py
-└── ROCplots
-    ├── blosum50_8_3.png
-    └── matio_8_3.png
+└── Jupyter notebook
+    ├── 8x8 reconstruction
+    └── other workflow
 ```
 
 Any dependencies noted in `requirements.txt`. 
@@ -54,7 +54,7 @@ Then that hidden, reduced encoding is processed by the decoding layer to give an
 
 <img src="test_auto.png" /><br />
 
-Also here: [test_auto.png](https://github.com/cechlauren/final/blob/master/test_auto.png).
+Also here: [test_auto.png](https://github.com/cechlauren/final/blob/master/test_auto.png) or viewable in Jupyter notebook.
 
 Its not pretty, but this seems to do pretty well given that I've added quite a bit of noise to the autoencoder.
 There seems to be some difference in learning activation for the central section, but I'd say its decent enough since this part doesn't need to be perfect.
