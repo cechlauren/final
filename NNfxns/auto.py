@@ -1,7 +1,7 @@
 import numpy as np
 
 """
--Make a NN class
+-Make a NN class specific to testing the 8bit matrix
 -define my functions
   -autoencoder and its parameters
   -initial values/input
@@ -16,7 +16,7 @@ import numpy as np
 
 """
 # Make a class to allow self reference
-class neural_network():
+class auto():
 
 # The NN will have a number of input neurons, a hidden layer, and number of an output neurons of the specified numbers, 
 # which we apply to the class and can adjust as necessary later
@@ -64,11 +64,8 @@ class neural_network():
         
         # Bit conversion for DNA into NN inputs because I'm too lazy to think of a different way to encode these. Recall, we want either 0 or 1, not anything continuous.
         
-        self.base_binary_conversion = {'A': '0001',
-                                       'C': '0010',
-                                       'T': '0100',
-                                       'G': '1000'
-                                       }
+        self.base_binary_conversion = {'0': '0',
+                                       '1': '1'}
 
         
         
