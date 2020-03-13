@@ -78,6 +78,12 @@ Then the autoencoder vectorizes (ie. reduces the dimension of) the input in a bi
 
 Then that hidden, reduced encoding is processed by the decoding layer to give an output like the following:
 
+<img src="test_auto.png" /><br />
+
+Also here: [test_auto.png](https://github.com/cechlauren/final/blob/master/test_auto.png).
+
+Its not pretty, but this seems to do pretty well given that I've added quite a bit of noise to the autoencoder.
+There seems to be some difference in learning activation for the central section, but I'd say its decent enough since this part doesn't need to be perfect.
 
 ## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
 
