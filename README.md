@@ -57,9 +57,13 @@ from the root directory of this project.
 
 ## Reconstruct an 8x8 identity matrix with an autoencoder containing 3 hidden neurons
 The 8x3x8 autoencoder used specifically to process the 8bit data can be found here [auto.py](https://github.com/cechlauren/final/blob/master/NNfxns/auto.py).
+
 The input is represented here for ease of testing by others [eightBit.txt](https://github.com/cechlauren/final/blob/master/data/eightBit.txt).
+
 The function that produces the reconstruction is here [test_auto.py](https://github.com/cechlauren/final/blob/master/test/test_auto.py). 
 
+
+The input for this autoencoder was as an 8x8 identity matrix made using [8by8code.png](https://github.com/cechlauren/final/blob/master/8by8code.png) and producing [8by8.png](https://github.com/cechlauren/final/blob/master/8by8.png).
 
 ## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
 
