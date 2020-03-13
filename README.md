@@ -55,9 +55,28 @@ python -m pytest
 from the root directory of this project.
 
 
-## Questions Part 1
+## Reconstruct an 8x8 identity matrix with an autoencoder containing 3 hidden neurons
+The 8x3x8 autoencoder used specifically to process the 8bit data can be found here [auto.py](https://github.com/cechlauren/final/blob/master/NNfxns/auto.py).
+The input is represented here for ease of testing by others [eightBit.txt](https://github.com/cechlauren/final/blob/master/data/eightBit.txt).
+The function that produces the reconstruction is here [test_auto.py](https://github.com/cechlauren/final/blob/master/test/test_auto.py). 
 
-### Question 1
+
+## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
+
+### Describe and implement a data preprocessing approach
+### Describe and implement a way to represent DNA sequence
+###  Develop and describe your network architecture
+
+## Develop a training regime (K-fold cross validation, bagging, etc) to test model 
+### Describe and implement the regime and answer question 3 subquestions 
+
+## Perform cross-validation experiments to test model hyperparameters
+### Develop and describe your choice of model hyperparameters
+### Question 4
+
+## Test model performance on test data
+
+
 Consider the false positive rate (proportion of negative pairs with scores that exceed
 a score threshold) when the true positive rate (proportion of positive pairs with scores
 above the threshold) is 0.7. 
