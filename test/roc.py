@@ -1,7 +1,7 @@
 import sys
-from .getseq import *
-from .sequences import *
-from .smithwaterman import sw
+#from .getseq import *
+#from .sequences import *
+#from .smithwaterman import sw
 import matplotlib.pyplot as plt
 import sklearn.metrics as skm
 
