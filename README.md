@@ -9,22 +9,15 @@ Contains: autoencoder and predictions for RAP1 binding sites.
 ```
 .
 ├── README.md
-├── smith_waterman
+├── 
 ├── requirements.txt
 │   ...
-├── hw3align
-│   ├── getmatrix.py
-│   ├── __main__.py
-│   ├── optimalgaps.py
-│   ├── optimalmatrix.py
-│   ├── roc.py
-│   ├── smithwaterman.py
-│   ├── seqnamesprep.txt
-│   ├── getseq.py
-│   └── sequences
+├── NNfxns
+│   ├── neural_network.py
+│   ├── auto.py
+│   └── train.py
 ├── test
-│    ├── test_optimization.py
-│    └── test_smithwaterman.py
+│    └── test_auto.py
 └── ROCplots
     ├── blosum50_8_3.png
     └── matio_8_3.png
