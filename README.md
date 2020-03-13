@@ -63,7 +63,15 @@ The input is represented here for ease of testing by others [eightBit.txt](https
 The function that produces the reconstruction is here [test_auto.py](https://github.com/cechlauren/final/blob/master/test/test_auto.py). 
 
 
-The input for this autoencoder was as an 8x8 identity matrix made using [8by8code.png](https://github.com/cechlauren/final/blob/master/8by8code.png) and producing [8by8.png](https://github.com/cechlauren/final/blob/master/8by8.png).
+The input for this autoencoder was as an 8x8 identity matrix made using 
+<img src="8by8code.png" /><br />
+
+and producing
+<img src="8by8.png" /><br />
+
+If you see nothing, see:
+[8by8code.png](https://github.com/cechlauren/final/blob/master/8by8code.png) and
+[8by8.png](https://github.com/cechlauren/final/blob/master/8by8.png).
 
 ## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
 
