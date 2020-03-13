@@ -9,8 +9,8 @@ Contains: autoencoder and predictions for RAP1 binding sites.
 ```
 .
 ├── README.md
-├── 
 ├── requirements.txt
+├── various .png
 │   ...
 ├── NNfxns
 │   ├── neural_network.py
@@ -23,39 +23,13 @@ Contains: autoencoder and predictions for RAP1 binding sites.
     └── matio_8_3.png
 ```
 
-## USAGE
+Any dependencies noted in `requirements.txt`. 
 
-To use the package, first make a new conda environment and activate it
+## Building an autoencoder:
+## Background
+Autoencoders are a type of feedforward neural networks where the input is the same thing as the output. Basically, they will take the input and squish it into a low dimension summary code that represents what should be reconstructed in the output. To make an autoencoder (and later on a neural network), one needs at least three things: (1) an encoding method, (2) a decoding method, and (3) a loss function. The encoder and decoder are fully connected feedforward NN, while the code is a single layer of artificial NN that has a hyperparameter-defined number of nodes. Additional hyperparameters that should be set before training are: (1) code size, (2) number of layers, (3) number of nodes per layer, and (4) a loss function like MSE or binary crossentropy. Some of those hyperparameters were already set for us in this final…
 
-```
-conda create -n exampleenv python=3
-source activate exampleenv
-```
-
-then run
-
-```
-conda install --yes --file requirements.txt
-```
-
-to install all the dependencies in `requirements.txt`. Then the package's
-main function (located in `HW3_skeleton/hw3align/__main__.py`) can be run as follows XXX
-I could not get my module tests to work so  you can also scroll to see the writeup, or go check out testing folder.
-
-
-
-## TESTING
-
-Testing is as simple as running
-
-```
-python -m pytest
-```
-
-from the root directory of this project.
-
-
-## Reconstruct an 8x8 identity matrix with an autoencoder containing 3 hidden neurons
+## Implementation: reconstructing an 8x8 identity matrix with an autoencoder containing 3 hidden neurons
 The 8x3x8 autoencoder used specifically to process the 8bit data can be found here [auto.py](https://github.com/cechlauren/final/blob/master/NNfxns/auto.py).
 
 The input is represented here for ease of testing by others [eightBit.txt](https://github.com/cechlauren/final/blob/master/data/eightBit.txt).
@@ -87,18 +61,22 @@ There seems to be some difference in learning activation for the central section
 
 ## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
 
-### Describe and implement a data preprocessing approach
-### Describe and implement a way to represent DNA sequence
-###  Develop and describe your network architecture
+### Data Preprocessing: Describe and implement a data preprocessing approach
+### DNA Sequence Representation: Describe and implement a way to represent DNA sequence
+### Network Architecture: Develop and describe your network architecture
+To make something more powerful than the 8x3x8 autoencoder, one can increase the number of layers, nodes per layer, and more importantly the code size. Increasing those hyperparameters allows neural networks to learn more complex codings. Overdoing this part, however, could cause overfitting since the NN will simply learn to copy the inputs as the output without learning anything meaningful. By making more of a sandwich where the code size is small, the NN won’t be able to directly copy the input to the output and so is forced to learn representative features. 
+Sometimes we can force an NN to learn useful features by adding random noise so that the NN must determine the meaningful data. 
 
-## Develop a training regime (K-fold cross validation, bagging, etc) to test model 
+
+## Training Regime: Develop a training regime (K-fold cross validation, bagging, etc) to test model 
 ### Describe and implement the regime and answer question 3 subquestions 
 
-## Perform cross-validation experiments to test model hyperparameters
+## Cross-Validation: Perform cross-validation experiments to test model hyperparameters
 ### Develop and describe your choice of model hyperparameters
 ### Question 4
 
-## Test model performance on test data
+## Testing: Test model performance on test data
+
 
 
 Consider the false positive rate (proportion of negative pairs with scores that exceed
