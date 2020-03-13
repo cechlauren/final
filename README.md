@@ -1,9 +1,9 @@
-# Write Up Homework 3: Smith-Waterman
+# Write Up Final: Constructing a Neural Network
 
 [![Build
 Status](https://travis-ci.org/cechlauren/HW3_skeleton.svg?branch=master)](https://travis-ci.org/cechlauren/HW3_skeleton)
 
-Smith-Waterman-derived alignment project with testing and writeup.
+Contains: autoencoder and predictions for RAP1 binding sites.
 
 ## STRUCTURE
 ```
