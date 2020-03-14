@@ -275,3 +275,5 @@ Ref and citations:
 https://datascience.stackexchange.com/questions/9443/when-to-use-one-hot-encoding-vs-labelencoder-vs-dictvectorizor
 https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
 https://github.com/jhb86253817/CompNeuro/blob/f5dde5cb0f2e298206f60066150e35ed5e7c3ed4/project1/project_1_template.py
+https://towardsdatascience.com/autoencoders-made-simple-6f59e2ab37ef
+https://people.eecs.berkeley.edu/~dawnsong/papers/Recognizing%20functions%20in%20binaries%20with%20neural%20networks_augsut%202015.pdf
