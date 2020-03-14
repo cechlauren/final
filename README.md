@@ -266,7 +266,7 @@ If you try different activation functions (ex: sigmoid v relu), you might see sl
 I'd guess that a regularization function might be appropriate in instances where we saw neuron dropout. 
 
 ## TESTING PERFORMANCE 
-* For alpha = 1: [NN_predictions.txt](https://github.com/cechlauren/final/blob/master/NN_predictions.txt)
+* For alpha = 1: [predictions.txt](https://github.com/cechlauren/final/blob/master/predictions.txt)
 
 
 
