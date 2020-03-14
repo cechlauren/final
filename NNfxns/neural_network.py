@@ -95,7 +95,7 @@ class neural_network():
     def set_input_and_expected_values(self, input_DNA, autoencoder=True, negative=True):
         # Convert input DNA sequence into binary bits
         self._construct_input_vector(input_DNA)
-        # Set expected value depending on autoencoder or werk
+        # Set expected value depending on autoencoder or testme
         self._set_expected_values(autoencoder, negative)
         # Weight matrices and input/output vectors with bias applied
         self.input_with_bias = np.append(self.input_vector, [1])
