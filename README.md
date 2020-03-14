@@ -64,6 +64,38 @@ There seems to be some difference in learning activation for the central section
 ### Data Preprocessing: Describe and implement a data preprocessing approach
 How one prepares the NN data is probably one of the more imporant parts to getting reasonable predictions; "crap in, crap out" as they say. 
 
+There are ~137 positive sequences each with 17 nucleotides that describe RAP1 binding sites. Its possible that our negatives, which are ~1000 nucleotides long, contain at least partial positives. Thus, we may see some terrible predictions if our negatives aren't really negatives. 
+
+One way to do that might be breaking up the negatives into 17 nucleotide chunks and comparing it with the positive set over and over (ie. recycle them) until one runs through the all the distinct negatives. See line 57 in [train.py](https://github.com/cechlauren/final/blob/master/NNfxns/train.py).
+
+```
+partitions = int(args['<partitions>']) #partitions: the number of different parts we should make for cross-validation
+    neg_division = len(negative_sites) / float(partitions) # how many partitions we can make from the sites given
+    neg_randomly_partitioned_list = [negative_sites[int(round(neg_division * i)): int(round(neg_division * (i + 1)))]
+                                     for i in range(partitions)] # makes a list of those partitions thru each site
+
+    pos_division = len(positive_sites) / float(partitions) # ditto ^^
+    pos_randomly_partitioned_list = [positive_sites[int(round(pos_division * i)): int(round(pos_division * (i + 1)))]
+                                     for i in range(partitions)]
+
+```
+
+One will import the RAP1 binding sites and the negative sites (parsing the fasta for the 1000 bases).
+Then for each sequence, iterate over each 17 base chunk and train with an expected of 0 for neg and 1 for pos. 
+
+Clearly, the number of negative instances is going to be much more than that of positives. 
+
+Some ways to deal with this might be:
+- increasing our positives (small effect overall)
+- making the positive:negative ratio 1:1 (large effect overall)
+
+The latter point supports a decision to train against all positive training sites for every 137 negative training instances.
+
+
+
+
+### DNA Sequence Representation: Describe and implement a way to represent DNA sequence
+
 There are 4 different nucleotides potentially describing each base in the given sequences. Each nucleotide can be represented in a bitwise fashion using one-hot encoding. For example, from this code: [neural_network.py](https://github.com/cechlauren/final/blob/master/NNfxns/neural_network.py)
 ```
 self.base_binary_conversion = {'A': '0001',
@@ -75,10 +107,43 @@ self.base_binary_conversion = {'A': '0001',
 
 Not only is this a binary representation, but can be adjusted for wildcard nucleotides, or we can change how we assign each nucleotide if we think there may be a bias for certain nucleotides in the training set (we don't want certain features to overpower the others just because there happens to be randomly more 'G' rich sequences in the training set, for instance.
 
+For this NN, the input_DNA string 'GA' would be vectorized like this:
+
+```
+self.base_binary_conversion = {'A': '0001',
+                                       'C': '0010',
+                                       'T': '0100',
+                                       'G': '1000'
+                                       }
+...                                       
+                                       
+def _construct_input_vector(self, input_DNA):
+       
+        temp_vector_list = []
+
+        for base in input_DNA:
+            for number in self.base_binary_conversion[base]:
+                temp_vector_list.append(float(number))
+
+        self.input_vector = np.asarray(temp_vector_list)
+
+```
+This may end up looking like 
+```
+[10000 
+0001]
+
+```
+
+or more likely
+```
+[.99910 0.00001 0.00001 0.00001
+ 0.00001 0.00001 0.00001 .99910]
+
+```
 
 
 
-### DNA Sequence Representation: Describe and implement a way to represent DNA sequence
 ### Network Architecture: Develop and describe your network architecture
 To make something more powerful than the 8x3x8 autoencoder, one can increase the number of layers, nodes per layer, and more importantly the code size. Increasing those hyperparameters allows neural networks to learn more complex codings. Overdoing this part, however, could cause overfitting since the NN will simply learn to copy the inputs as the output without learning anything meaningful. By making more of a sandwich where the code size is small, the NN won’t be able to directly copy the input to the output and so is forced to learn representative features. 
 Sometimes we can force an NN to learn useful features by adding random noise so that the NN must determine the meaningful data. 
