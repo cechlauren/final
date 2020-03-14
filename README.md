@@ -159,8 +159,26 @@ The network will accept 17 base units and will output a value from around 0 to a
  
 
 ## Training Regime: Develop a training regime (K-fold cross validation, bagging, etc) to test model 
-### Describe and implement the regime and answer question 3 subquestions 
+### Describe and implement the regime
+### Answer question 3 subquestions 
 
+- How was your training regime designed so as to prevent the negative training data from overwhelming the positive training data?
+
+See answer above in Data Preprocessing.
+But in short, I resampled from the positives, while using all 17 nt chunks possible from each negative instance.
+May have been interesting to train on negative examples that had higher homology, rather than just pooling all of those negative instances together...that way the NN would have a better chance at learning the features that separate RAP1 sites.
+
+
+- What was your stop criterion for convergence in your learned parameters? How did you decide this?
+In most instances, there are three distinct splits of data. In one we train, in the others we test and validate. When we train, we train across epochs and evaluate loss. If we visualize this, it produces what's called a "loss curve." 
+Sometimes we do early stopping if things dont change towards the end of the curve. Like if it looks flat and doesn't change. 
+On the test curve we see something similar, but the curve will start to go back up after a certain amount of epochs. 
+That's what overfitting looks like. Ideally, we'd stop training at the intersect of the training/test curves. Like this: 
+
+how do you know when you're done training? Three splits of data (at least two) some segment we train on and some that we test/validate on. When we train, we train across epochs and evaluate our loss. Our traibned set we see a loss curve. Sometimes we do early so=toping if things dont change towards the end of the curve, On the test curve we see someting similar but the curve starts go back up, so this is a result of overfitting. Stop training at the intersect. 
+We can just train until we think its appropriate, "loss curves"
+
+resample from positives (sample like 3 times), downsample from negs (helps prevent overfitting),  want 1:1. If there was more time, then you'd look at positives and see how many the nucleotides show up. 
 
 
 ## Cross-Validation: Perform cross-validation experiments to test model hyperparameters
