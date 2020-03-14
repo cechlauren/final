@@ -175,6 +175,9 @@ Sometimes we do early stopping if things dont change towards the end of the curv
 On the test curve we see something similar, but the curve will start to go back up after a certain amount of epochs. 
 That's what overfitting looks like. Ideally, we'd stop training at the intersect of the training/test curves. Like this: 
 
+<img src="no_early_stopping.png" /><br />
+
+
 how do you know when you're done training? Three splits of data (at least two) some segment we train on and some that we test/validate on. When we train, we train across epochs and evaluate our loss. Our traibned set we see a loss curve. Sometimes we do early so=toping if things dont change towards the end of the curve, On the test curve we see someting similar but the curve starts go back up, so this is a result of overfitting. Stop training at the intersect. 
 We can just train until we think its appropriate, "loss curves"
 
