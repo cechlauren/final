@@ -105,7 +105,7 @@ self.base_binary_conversion = {'A': '0001',
                                        }
 ```
 
-Not only is this a binary representation, but can be adjusted for wildcard nucleotides, or we can change how we assign each nucleotide if we think there may be a bias for certain nucleotides in the training set (we don't want certain features to overpower the others just because there happens to be randomly more 'G' rich sequences in the training set, for instance.
+Not only is this a binary (read less memory) representation, but can be adjusted for wildcard nucleotides, or we can change how we assign each nucleotide if we think there may be a bias for certain nucleotides in the training set (we don't want certain features to overpower the others just because there happens to be randomly more 'G' rich sequences in the training set, for instance.
 
 For this NN, the input_DNA string 'GA' would be vectorized like this:
 
@@ -148,15 +148,29 @@ or more likely
 To make something more powerful than the 8x3x8 autoencoder, one can increase the number of layers, nodes per layer, and more importantly the code size. Increasing those hyperparameters allows neural networks to learn more complex codings. Overdoing this part, however, could cause overfitting since the NN will simply learn to copy the inputs as the output without learning anything meaningful. By making more of a sandwich where the code size is small, the NN won’t be able to directly copy the input to the output and so is forced to learn representative features. 
 Sometimes we can force an NN to learn useful features by adding random noise so that the NN must determine the meaningful data. 
 
+In this instance we have :
+* Input layer with 17*4 nodes (because 17 different nucleotides defining each sequence, and 4 different
+          possible nucleotides describing those positions) + bias 
+* Hidden layer with 23-35 nodes (merge at least 2 input neurons)+ bias   
+* One output layer node (number of neurons in the output layer will equal the number of outputs associated with each input; we want one answer)
+* All with sigmoid activation
+
+The network will accept 17 base units and will output a value from around 0 to around 1, where 0 is not a RAP1 binding site.
+ 
 
 ## Training Regime: Develop a training regime (K-fold cross validation, bagging, etc) to test model 
 ### Describe and implement the regime and answer question 3 subquestions 
 
+
+
 ## Cross-Validation: Perform cross-validation experiments to test model hyperparameters
 ### Develop and describe your choice of model hyperparameters
+
 ### Question 4
 
 ## Testing: Test model performance on test data
+* For alpha = 1: [NN_predictions.txt](https://github.com/cechlauren/final/blob/master/NN_predictions.txt)
+* For alpha = 
 
 
 
