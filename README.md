@@ -160,6 +160,30 @@ The network will accept 17 base units and will output a value from around 0 to a
 
 ## Training Regime: Develop a training regime (K-fold cross validation, bagging, etc) to test model 
 ### Describe and implement the regime
+All described in [train.py](https://github.com/cechlauren/final/blob/master/NNfxns/train.py) but in short:
+1. split up neg sites into 17nt chunks, and randomize order of all 17nt positives
+2. for each neg chunk, we say the negatives are negative (0)
+3. keep track of all the negatives we go thru, and once we reach the length of the positives list, then we test on the postives
+4. for each pos chunk, we say the positives are not negative
+5. back to negatives we left off on...and repeat
+6. once the changes in errors are low enough, we stop
+
+*there were some instances where the negatives had positive homology, so took those out.*
+*not sure if the order is correct but found those at slice 4 , 5, and 9 after moving onto the next block of negatives post-positive testing.*
+7. Choose the connection matrix that has the greatest separation between the average positive and negative scores.
+See: 
+
+<img src="cnxn_matrix_1.png" /><br />
+
+(69 rows by 23 columns (bc 68 input layer+ 1 ouput layer, and 23 hidden layer))
+or [connection_matrix_1.csv](https://github.com/cechlauren/final/blob/master/connection_matrix_1.csv)
+
+
+<img src="cnxn_matrix_2.png" /><br />
+
+or [connection_matrix_2.csv](https://github.com/cechlauren/final/blob/master/connection_matrix_2.csv)
+
+
 ### Answer question 3 subquestions 
 
 - How was your training regime designed so as to prevent the negative training data from overwhelming the positive training data?
@@ -173,21 +197,32 @@ May have been interesting to train on negative examples that had higher homology
 In most instances, there are three distinct splits of data. In one we train, in the others we test and validate. When we train, we train across epochs and evaluate loss. If we visualize this, it produces what's called a "loss curve." 
 Sometimes we do early stopping if things dont change towards the end of the curve. Like if it looks flat and doesn't change. 
 On the test curve we see something similar, but the curve will start to go back up after a certain amount of epochs. 
-That's what overfitting looks like. Ideally, we'd stop training at the intersect of the training/test curves. Like this: 
+That's what overfitting looks like. Ideally, we'd stop training at the intersect of the training/test curves, or at least before the test curve starts diverging. Like this: 
 
 <img src="no_early_stopping.png" /><br />
 
+Sometimes, people just do early stopping at a time they think is appropriate. This was how I classified my stop criterion, based on the error that I had stored in my NN matrix:
+```
+if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
+                        min_change_1 > -.00000000001 and min_change_1 < 0]) and any(
+                    [max_change_2 < 0.00000000001 and max_change_2 > 0,
+                     min_change_2 > -0.00000000001 and min_change_2 < 0]):
+                    print("Stop criterion met after {} iterations".format(counter))
 
-how do you know when you're done training? Three splits of data (at least two) some segment we train on and some that we test/validate on. When we train, we train across epochs and evaluate our loss. Our traibned set we see a loss curve. Sometimes we do early so=toping if things dont change towards the end of the curve, On the test curve we see someting similar but the curve starts go back up, so this is a result of overfitting. Stop training at the intersect. 
-We can just train until we think its appropriate, "loss curves"
+```
 
-resample from positives (sample like 3 times), downsample from negs (helps prevent overfitting),  want 1:1. If there was more time, then you'd look at positives and see how many the nucleotides show up. 
+
+
 
 
 ## Cross-Validation: Perform cross-validation experiments to test model hyperparameters
 ### Develop and describe your choice of model hyperparameters
 
 ### Question 4
+- Describe how you set up your experiment to measure your system's performance.
+- What set of learning parameters works the best? Please provide sample output from your system.
+- What are the effects of altering your system (e.g. number of hidden units or choice of kernel function)? Why do you think you observe these effects?
+- What other parameters, if any, affect performance?
 
 ## Testing: Test model performance on test data
 * For alpha = 1: [NN_predictions.txt](https://github.com/cechlauren/final/blob/master/NN_predictions.txt)
@@ -196,4 +231,4 @@ resample from positives (sample like 3 times), downsample from negs (helps preve
 
 
 Ref and citations:
-
+https://datascience.stackexchange.com/questions/9443/when-to-use-one-hot-encoding-vs-labelencoder-vs-dictvectorizor
