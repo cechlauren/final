@@ -170,6 +170,7 @@ All described in [train.py](https://github.com/cechlauren/final/blob/master/NNfx
 
 *there were some instances where the negatives had positive homology, so took those out.*
 *not sure if the order is correct but found those at slice 4 , 5, and 9 after moving onto the next block of negatives post-positive testing.*
+
 7. Choose the connection matrix that has the greatest separation between the average positive and negative scores.
 See: 
 
@@ -217,18 +218,56 @@ if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
 
 ## CROSS VALIDATION
 ### Develop and describe your choice of model hyperparameters
+Several hyperparameters have already been discussed in this write-up.
+
+I have not discussed bias. I have added bias to my input and hidden layers. The bias provides some flexibility and generalization for the neural network model. A mathmatical equivalent would be b in y=mx+b. We can shift our activation function left or right, adjust the weighted sum of the inputs to the neuron, and adjust the output. Example:
+
+
+```
+def forward_propogation(self):
+        # Generates hidden layer outputs
+        
+        output_one_list = []
+
+        for element in np.nditer(np.dot(self.input_with_bias, self.matrix_1_bias)):
+            output_one_list.append(self._sigmoid_function(element))
+        self.hidden_layer_output = np.asarray(output_one_list)
+
+        # Calculate the square derivate matrix for the hidden layer outputs
+        
+        for position, value in enumerate(self.hidden_layer_output):
+            self.hidden_dx_matrix[position][position] = self._sigmoid_function_derivative(value)
+            
+... also done on the hidden layer
+```
+
 
 ### Question 4
-- Describe how you set up your experiment to measure your system's performance.
-- What set of learning parameters works the best? Please provide sample output from your system.
+- Describe how you set up your experiment to measure your system's performance. What set of learning parameters works the best? Please provide sample output from your system.
+I mainly changed the learning rate. I tried a few but settled on alpha = 1.
+Here's what the distribution of scores looks like for that:
+
+<img src="distribution_alpha_1.png" /><br />
+
+
+This is from the test set. I've probably found too many positives, or I messed up my labeling... 
+
+On another note, if I wanted to verify that network loss behaved as expected, I would want to see a good(almost perfect) ROC curve from the training set. 
+
 - What are the effects of altering your system (e.g. number of hidden units or choice of kernel function)? Why do you think you observe these effects?
+
+More hidden neurons means the NN can memorize the dataset. THis means the performance on the training set will be really good, but the catch is that it's overfitting for the test set.
+If you try different activation functions (ex: sigmoid v relu), you might see slight differences but not much. I didn't try this, but I'd guess that it would affect processing time the most. 
 - What other parameters, if any, affect performance?
+I'd guess that a regularization function might be appropriate in instances where we saw neuron dropout. 
 
 ## TESTING PERFORMANCE 
 * For alpha = 1: [NN_predictions.txt](https://github.com/cechlauren/final/blob/master/NN_predictions.txt)
-* For alpha = 
+
 
 
 
 Ref and citations:
 https://datascience.stackexchange.com/questions/9443/when-to-use-one-hot-encoding-vs-labelencoder-vs-dictvectorizor
+https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
+https://github.com/jhb86253817/CompNeuro/blob/f5dde5cb0f2e298206f60066150e35ed5e7c3ed4/project1/project_1_template.py
