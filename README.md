@@ -25,7 +25,7 @@ Contains: autoencoder and predictions for RAP1 binding sites.
 
 Any dependencies noted in `requirements.txt`. 
 
-## Building an autoencoder:
+## BUILDING AN AUTOENCODER
 ## Background
 Autoencoders are a type of feedforward neural networks where the input is the same thing as the output. Basically, they will take the input and squish it into a low dimension summary code that represents what should be reconstructed in the output. To make an autoencoder (and later on a neural network), one needs at least three things: (1) an encoding method, (2) a decoding method, and (3) a loss function. The encoder and decoder are fully connected feedforward NN, while the code is a single layer of artificial NN that has a hyperparameter-defined number of nodes. Additional hyperparameters that should be set before training are: (1) code size, (2) number of layers, (3) number of nodes per layer, and (4) a loss function like MSE or binary crossentropy. Some of those hyperparameters were already set for us in this final…
 
@@ -59,7 +59,7 @@ Also here: [test_auto.png](https://github.com/cechlauren/final/blob/master/test_
 Its not pretty, but this seems to do pretty well given that I've added quite a bit of noise to the autoencoder.
 There seems to be some difference in learning activation for the central section, but I'd say its decent enough since this part doesn't need to be perfect.
 
-## Develop a fully connected neural network that predicts transcription factor binding with the training data provided
+## DEVELOP A NEURAL NETWORK PREDICTING TF BINDING
 
 ### Data Preprocessing: Describe and implement a data preprocessing approach
 How one prepares the NN data is probably one of the more imporant parts to getting reasonable predictions; "crap in, crap out" as they say. 
@@ -158,7 +158,7 @@ In this instance we have :
 The network will accept 17 base units and will output a value from around 0 to around 1, where 0 is not a RAP1 binding site.
  
 
-## Training Regime: Develop a training regime (K-fold cross validation, bagging, etc) to test model 
+## TRAINING REGIME
 ### Describe and implement the regime
 All described in [train.py](https://github.com/cechlauren/final/blob/master/NNfxns/train.py) but in short:
 1. split up neg sites into 17nt chunks, and randomize order of all 17nt positives
@@ -215,7 +215,7 @@ if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
 
 
 
-## Cross-Validation: Perform cross-validation experiments to test model hyperparameters
+## CROSS VALIDATION
 ### Develop and describe your choice of model hyperparameters
 
 ### Question 4
@@ -224,7 +224,7 @@ if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
 - What are the effects of altering your system (e.g. number of hidden units or choice of kernel function)? Why do you think you observe these effects?
 - What other parameters, if any, affect performance?
 
-## Testing: Test model performance on test data
+## TESTING PERFORMANCE 
 * For alpha = 1: [NN_predictions.txt](https://github.com/cechlauren/final/blob/master/NN_predictions.txt)
 * For alpha = 
 
