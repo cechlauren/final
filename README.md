@@ -252,6 +252,10 @@ Here's what the distribution of scores looks like for that:
 
 This is from the test set. I've probably found too many positives, or I messed up my labeling... 
 
+I also tried changing the hidden layers. Here's how those same test set predictions distribute:
+
+<img src="distribution_hidden_34.png" /><br />
+
 On another note, if I wanted to verify that network loss behaved as expected, I would want to see a good(almost perfect) ROC curve from the training set. 
 
 - What are the effects of altering your system (e.g. number of hidden units or choice of kernel function)? Why do you think you observe these effects?
