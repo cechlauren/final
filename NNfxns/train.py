@@ -3,12 +3,12 @@ Training the neural net
 
 What can be used:
      autoencoder
-     %%%%%%%%werk <partitions> <sampling>
+     testme <partitions> <sampling>
      test
 Arguments:
     autoencoder
         Run ze autoencoder
-    %%%%%%%%werk
+    testme
         Do the rap1 learning task including cross-validation
     test
         Classify test data and output to tsv file type
@@ -20,7 +20,7 @@ Arguments:
         (space) Each sequence is cut into 17 nucleotide bits for inputs (the binary bits that are useable by our model)
 """
 
-def werk():
+def testme():
     """
     Train neural network on RAP1 binding sites
         * Input layer with 17*4 nodes (because 17 different nucleotides defining each sequence, and 4 different
@@ -273,8 +273,8 @@ if __name__ == 'train':
     if args['autoencoder']:
         autoencoder()
 
-    if args['werk']:
-        werk()
+    if args['testme']:
+        testme()
 
     if args['test']:
         test()
