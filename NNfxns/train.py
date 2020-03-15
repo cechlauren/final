@@ -104,7 +104,7 @@ def testme():
                             neuralnet.setin_n_exp_values(slice, autoencoder=False, negative=True)
                             neuralnet.forward_propogation()
                             neuralnet.backward_propogation()
-                            neuralnet.update_weights_and_bias()
+                            neuralnet.weight_bias_renew()
                             pos_counter += 1
                         else:
                             print(slice)
@@ -114,7 +114,7 @@ def testme():
                             neuralnet.setin_n_exp_values(pos_site, autoencoder=False, negative=False)
                             neuralnet.forward_propogation()
                             neuralnet.backward_propogation()
-                            neuralnet.update_weights_and_bias()
+                            neuralnet.weight_bias_renew()
 
                         pos_counter = 0
 
@@ -124,10 +124,10 @@ def testme():
 
                 print("Training set: {}/{} completed...".format(counter, len(neg_cross_validation_set)))
 
-                greatestdelta_1 = neuralnet.matrix_1_errors.max()
-                smallestdelta_1 = neuralnet.matrix_1_errors.min()
-                greatestdelta_2 = neuralnet.matrix_2_errors.max()
-                smallestdelta_2 = neuralnet.matrix_2_errors.min()
+                greatestdelta_1 = neuralnet.errors_mat1.max()
+                smallestdelta_1 = neuralnet.errors_mat1.min()
+                greatestdelta_2 = neuralnet.errors_mat2.max()
+                smallestdelta_2 = neuralnet.errors_mat2.min()
 
                 if any([greatestdelta_1 < 0.00000000001 and greatestdelta_1 > 0,
                         smallestdelta_1 > -.00000000001 and smallestdelta_1 < 0]) and any(
@@ -150,7 +150,7 @@ def testme():
                             neuralnet.setin_n_exp_values(slice, autoencoder=False, negative=True)
                             neuralnet.forward_propogation()
                             neuralnet.backward_propogation()
-                            neuralnet.update_weights_and_bias()
+                            neuralnet.weight_bias_renew()
                             pos_counter += 1
 
                         else:
@@ -162,16 +162,16 @@ def testme():
                             neuralnet.setin_n_exp_values(pos_site, autoencoder=False, negative=False)
                             neuralnet.forward_propogation()
                             neuralnet.backward_propogation()
-                            neuralnet.update_weights_and_bias()
+                            neuralnet.weight_bias_renew()
 
                         pos_counter = 0
 
                     counter += 1
 
-                greatestdelta_1 = neuralnet.matrix_1_errors.max()
-                smallestdelta_1 = neuralnet.matrix_1_errors.min()
-                greatestdelta_2 = neuralnet.matrix_2_errors.max()
-                smallestdelta_2 = neuralnet.matrix_2_errors.min()
+                greatestdelta_1 = neuralnet.errors_mat1.max()
+                smallestdelta_1 = neuralnet.errors_mat1.min()
+                greatestdelta_2 = neuralnet.errors_mat2.max()
+                smallestdelta_2 = neuralnet.errors_mat2.min()
 
                 if any([greatestdelta_1 < 0.00000000001 and greatestdelta_1 > 0,
                         smallestdelta_1 > -.00000000001 and smallestdelta_1 < 0]) and any(
@@ -208,13 +208,13 @@ def testme():
 
         print('Positive avg: {}'.format(sum(pos_list) / len(pos_list)))
         print('Negative avg: {}'.format(sum(neg_list) / len(neg_list)))
-        print(neuralnet.matrix_1_bias)
-        print(neuralnet.matrix_2_bias)
+        print(neuralnet.bias_mat1)
+        print(neuralnet.bias_mat2)
 
         # Output the coneuralnetection matrices with greatest separation between the average positive and negative scores
         if ((sum(pos_list) / len(pos_list)) - (sum(neg_list) / len(neg_list))) > separation:
-            np.savetxt('cnx_matrix_1.csv', neuralnet.matrix_1_bias, delimiter=',')
-            np.savetxt('cnx_matrix_2.csv', neuralnet.matrix_2_bias, delimiter=',')
+            np.savetxt('cnx_matrix_1.csv', neuralnet.bias_mat1, delimiter=',')
+            np.savetxt('cnx_matrix_2.csv', neuralnet.bias_mat2, delimiter=',')
             separation = (sum(pos_list) / len(pos_list)) - (sum(neg_list) / len(neg_list))
 
 
@@ -231,12 +231,12 @@ def autoencoder():
     while finished_working == False:
         neuralnet.forward_propogation()
         neuralnet.backward_propogation()
-        neuralnet.update_weights_and_bias()
+        neuralnet.weight_bias_renew()
 
-        greatestdelta_1 = neuralnet.matrix_1_errors.max()
-        smallestdelta_1 = neuralnet.matrix_1_errors.min()
-        greatestdelta_2 = neuralnet.matrix_2_errors.max()
-        smallestdelta_2 = neuralnet.matrix_2_errors.min()
+        greatestdelta_1 = neuralnet.errors_mat1.max()
+        smallestdelta_1 = neuralnet.errors_mat1.min()
+        greatestdelta_2 = neuralnet.errors_mat2.max()
+        smallestdelta_2 = neuralnet.errors_mat2.min()
 
         if any([greatestdelta_1 < 0.00001 and greatestdelta_1 > 0,
                 smallestdelta_1 > -.00001 and smallestdelta_1 < 0]) or any(
@@ -249,8 +249,8 @@ def autoencoder():
 def test():
     test_sequences = open('data/rap1-lieb-test.txt')
     neuralnet = neural_network(68, 23, 1)
-    neuralnet.matrix_1_bias = np.loadtxt('cnx_matrix_1.csv', delimiter=',')
-    neuralnet.matrix_2_bias = np.loadtxt('cnx_matrix_2.csv', delimiter=',')
+    neuralnet.bias_mat1 = np.loadtxt('cnx_matrix_1.csv', delimiter=',')
+    neuralnet.bias_mat2 = np.loadtxt('cnx_matrix_2.csv', delimiter=',')
 
     neuralnet_outputs = open('neuralnet_predictions.txt', 'w')
 
