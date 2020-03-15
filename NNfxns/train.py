@@ -3,7 +3,7 @@ Training the neural net
 
 What can be used:
      autoencoder
-     testme <partitions> <sampling>
+     testme <splits> <sampling>
      test
 Arguments:
     autoencoder
@@ -12,10 +12,10 @@ Arguments:
         Do the rap1 learning task including cross-validation
     test
         Classify test data and output to tsv file type
-    <partitions>
-        Number of partitions to make for cross-valitation (k-fold!)
+    <splits>
+        Number of splits to make for cross-valitation (k-fold!)
     <sampling>
-        Sampling method for NN training input
+        Sampling method for neuralnet training input
         (slide) Go over each sequence in 17 nucleotide sliding frame (the length of the positives/test binding sites)
         (space) Each sequence is cut into 17 nucleotide bits for inputs (the binary bits that are useable by our model)
 """
@@ -40,13 +40,13 @@ def testme():
 
     # This part takes care of bringing in all those positive sequences
     
-    positive_sites = [pos_seq.strip() for pos_seq in open('data/rap1-lieb-positives.txt')]
+    pos = [pos_sequence.strip() for pos_sequence in open('data/rap1-lieb-positives.txt')]
 
     
     
     # This part takes care of bringing in all those neg sequences
     
-    negative_sites = list(SeqIO.parse('data/yeast-upstream-1k-negative.fa', 'fasta'))
+    neg = list(SeqIO.parse('data/yeast-upstream-1k-negative.fa', 'fasta'))
     
     
 
@@ -54,39 +54,39 @@ def testme():
     # Taken from : http://stackoverflow.com/questions/3352737/python-randomly-partition-a-list-into-n-nearly-equal-parts
     
     
-    partitions = int(args['<partitions>'])
-    neg_division = len(negative_sites) / float(partitions) # how many partitions we can make from the sites given
-    neg_randomly_partitioned_list = [negative_sites[int(round(neg_division * i)): int(round(neg_division * (i + 1)))]
-                                     for i in range(partitions)] # makes a list of those partitions thru each site
+    splits = int(args['<splits>'])
+    negative_division = len(neg) / float(splits) # how many splits we can make from the sites given
+    neg_split_up = [neg[int(round(negative_division * i)): int(round(negative_division * (i + 1)))]
+                                     for i in range(splits)] # makes a list of those splits thru each site
 
-    pos_division = len(positive_sites) / float(partitions) # ditto ^^
-    pos_randomly_partitioned_list = [positive_sites[int(round(pos_division * i)): int(round(pos_division * (i + 1)))]
-                                     for i in range(partitions)]
+    pos_division = len(pos) / float(splits) # ditto ^^
+    pos_split_up = [pos[int(round(pos_division * i)): int(round(pos_division * (i + 1)))]
+                                     for i in range(splits)]
 
     
     
-    # Go thru neg sites subsets for x-validation, keep track of how many separations we do based on partitions
+    # Go thru neg sites subsets for x-validation, keep track of how many separations we do based on splits
     
     separation = 0
-    for index in range(int(args['<partitions>'])):
+    for index in range(int(args['<splits>'])):
         # Set up cross-validation sets for the positives and negatives
-        neg_site_list_copy = copy.deepcopy(neg_randomly_partitioned_list)
+        neg_site_list_copy = copy.deepcopy(neg_split_up)
         del neg_site_list_copy[index]
         neg_site_training = [seq for partition in neg_site_list_copy for seq in partition]
-        neg_cross_validation_set = neg_randomly_partitioned_list[index]
+        neg_cross_validation_set = neg_split_up[index]
 
-        pos_site_list_copy = copy.deepcopy(pos_randomly_partitioned_list)
+        pos_site_list_copy = copy.deepcopy(pos_split_up)
         del pos_site_list_copy[index]
         pos_site_training = [seq for partition in pos_site_list_copy for seq in partition]
-        pos_cross_validation_set = pos_randomly_partitioned_list[index]
+        pos_cross_validation_set = pos_split_up[index]
 
         print("Training on the training set...")
 
         # Input our hyperparameters = # nodes
-        NN = neural_network(68, 23, 1)
+        neuralnet = neural_network(68, 23, 1)
 
         # See neural_net.py to get info on initialization
-        NN.initialize_values()
+        neuralnet.initialize_values()
 
         pos_counter = 0
         counter = 0
@@ -97,24 +97,24 @@ def testme():
             for site in neg_site_training:
 
                 # Iterate over site in 17 nucleotide sliding frames in negative sites, decide which model to use
-                for block in range(len(site) - 16):
-                    slice = site[block:(block + 17)].seq
-                    if slice not in positive_sites:
+                for chunky in range(len(site) - 16):
+                    slice = site[chunky:(chunky + 17)].seq
+                    if slice not in pos:
                         if all([slice[4] == 'C', slice[5] == 'C', slice[9] == 'C']) == False:
-                            NN.set_input_and_expected_values(slice, autoencoder=False, negative=True)
-                            NN.forward_propogation()
-                            NN.backward_propogation()
-                            NN.update_weights_and_bias()
+                            neuralnet.setin_n_exp_values(slice, autoencoder=False, negative=True)
+                            neuralnet.forward_propogation()
+                            neuralnet.backward_propogation()
+                            neuralnet.update_weights_and_bias()
                             pos_counter += 1
                         else:
                             print(slice)
 
                     if pos_counter == len(pos_site_training):
                         for pos_site in pos_site_training:
-                            NN.set_input_and_expected_values(pos_site, autoencoder=False, negative=False)
-                            NN.forward_propogation()
-                            NN.backward_propogation()
-                            NN.update_weights_and_bias()
+                            neuralnet.setin_n_exp_values(pos_site, autoencoder=False, negative=False)
+                            neuralnet.forward_propogation()
+                            neuralnet.backward_propogation()
+                            neuralnet.update_weights_and_bias()
 
                         pos_counter = 0
 
@@ -124,15 +124,15 @@ def testme():
 
                 print("Training set: {}/{} completed...".format(counter, len(neg_cross_validation_set)))
 
-                max_change_1 = NN.matrix_1_errors.max()
-                min_change_1 = NN.matrix_1_errors.min()
-                max_change_2 = NN.matrix_2_errors.max()
-                min_change_2 = NN.matrix_2_errors.min()
+                greatestdelta_1 = neuralnet.matrix_1_errors.max()
+                smallestdelta_1 = neuralnet.matrix_1_errors.min()
+                greatestdelta_2 = neuralnet.matrix_2_errors.max()
+                smallestdelta_2 = neuralnet.matrix_2_errors.min()
 
-                if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
-                        min_change_1 > -.00000000001 and min_change_1 < 0]) and any(
-                    [max_change_2 < 0.00000000001 and max_change_2 > 0,
-                     min_change_2 > -0.00000000001 and min_change_2 < 0]):
+                if any([greatestdelta_1 < 0.00000000001 and greatestdelta_1 > 0,
+                        smallestdelta_1 > -.00000000001 and smallestdelta_1 < 0]) and any(
+                    [greatestdelta_2 < 0.00000000001 and greatestdelta_2 > 0,
+                     smallestdelta_2 > -0.00000000001 and smallestdelta_2 < 0]):
                     print("Stop criterion met after {} iterations".format(counter))
                     break
 
@@ -141,16 +141,16 @@ def testme():
         if args['<sampling>'] == 'space':
             for site in neg_site_training:
                 
-                number_of_blocks = int(len(site) / 17) #length of neg site tells us the amount of 17 length chunks possible
+                number_of_chunkys = int(len(site) / 17) #length of neg site tells us the amount of 17 length chunks possible
 
-                for block in range(number_of_blocks):
-                    slice = site[(block * 17):((block + 1) * 17)].seq
-                    if slice not in positive_sites:
+                for chunky in range(number_of_chunkys):
+                    slice = site[(chunky * 17):((chunky + 1) * 17)].seq
+                    if slice not in pos:
                         if all([slice[4] == 'C', slice[5] == 'C', slice[9] == 'C']) == False:
-                            NN.set_input_and_expected_values(slice, autoencoder=False, negative=True)
-                            NN.forward_propogation()
-                            NN.backward_propogation()
-                            NN.update_weights_and_bias()
+                            neuralnet.setin_n_exp_values(slice, autoencoder=False, negative=True)
+                            neuralnet.forward_propogation()
+                            neuralnet.backward_propogation()
+                            neuralnet.update_weights_and_bias()
                             pos_counter += 1
 
                         else:
@@ -159,24 +159,24 @@ def testme():
                     #quick check to make sure that we've finished going thru the positives yet
                     if pos_counter == len(pos_site_training):
                         for pos_site in pos_site_training:
-                            NN.set_input_and_expected_values(pos_site, autoencoder=False, negative=False)
-                            NN.forward_propogation()
-                            NN.backward_propogation()
-                            NN.update_weights_and_bias()
+                            neuralnet.setin_n_exp_values(pos_site, autoencoder=False, negative=False)
+                            neuralnet.forward_propogation()
+                            neuralnet.backward_propogation()
+                            neuralnet.update_weights_and_bias()
 
                         pos_counter = 0
 
                     counter += 1
 
-                max_change_1 = NN.matrix_1_errors.max()
-                min_change_1 = NN.matrix_1_errors.min()
-                max_change_2 = NN.matrix_2_errors.max()
-                min_change_2 = NN.matrix_2_errors.min()
+                greatestdelta_1 = neuralnet.matrix_1_errors.max()
+                smallestdelta_1 = neuralnet.matrix_1_errors.min()
+                greatestdelta_2 = neuralnet.matrix_2_errors.max()
+                smallestdelta_2 = neuralnet.matrix_2_errors.min()
 
-                if any([max_change_1 < 0.00000000001 and max_change_1 > 0,
-                        min_change_1 > -.00000000001 and min_change_1 < 0]) and any(
-                    [max_change_2 < 0.00000000001 and max_change_2 > 0,
-                     min_change_2 > -0.00000000001 and min_change_2 < 0]):
+                if any([greatestdelta_1 < 0.00000000001 and greatestdelta_1 > 0,
+                        smallestdelta_1 > -.00000000001 and smallestdelta_1 < 0]) and any(
+                    [greatestdelta_2 < 0.00000000001 and greatestdelta_2 > 0,
+                     smallestdelta_2 > -0.00000000001 and smallestdelta_2 < 0]):
                     print("Stop criterion met after {} iterations".format(counter))
                     break
 
@@ -193,80 +193,80 @@ def testme():
         counter = 0
         for site in neg_cross_validation_set:
             for slice in range(len(site) - 16):
-                NN.set_input_and_expected_values(site[slice:slice + 17].seq, autoencoder=False, negative=True)
-                NN.forward_propogation()
-                neg_list.append(NN.output_layer_output)
+                neuralnet.setin_n_exp_values(site[slice:slice + 17].seq, autoencoder=False, negative=True)
+                neuralnet.forward_propogation()
+                neg_list.append(neuralnet.output_layer_output)
             counter += 1
             print("Negative cross-validation: {}/{} completed...".format(counter, len(neg_cross_validation_set)))
             break
 
         print("Positive cross-validation set...")
         for site in pos_cross_validation_set:
-            NN.set_input_and_expected_values(site, autoencoder=False)
-            NN.forward_propogation()
-            pos_list.append(NN.output_layer_output)
+            neuralnet.setin_n_exp_values(site, autoencoder=False)
+            neuralnet.forward_propogation()
+            pos_list.append(neuralnet.output_layer_output)
 
         print('Positive avg: {}'.format(sum(pos_list) / len(pos_list)))
         print('Negative avg: {}'.format(sum(neg_list) / len(neg_list)))
-        print(NN.matrix_1_bias)
-        print(NN.matrix_2_bias)
+        print(neuralnet.matrix_1_bias)
+        print(neuralnet.matrix_2_bias)
 
-        # Output the connection matrices with greatest separation between the average positive and negative scores
+        # Output the coneuralnetection matrices with greatest separation between the average positive and negative scores
         if ((sum(pos_list) / len(pos_list)) - (sum(neg_list) / len(neg_list))) > separation:
-            np.savetxt('connection_matrix_1.csv', NN.matrix_1_bias, delimiter=',')
-            np.savetxt('connection_matrix_2.csv', NN.matrix_2_bias, delimiter=',')
+            np.savetxt('cnx_matrix_1.csv', neuralnet.matrix_1_bias, delimiter=',')
+            np.savetxt('cnx_matrix_2.csv', neuralnet.matrix_2_bias, delimiter=',')
             separation = (sum(pos_list) / len(pos_list)) - (sum(neg_list) / len(neg_list))
 
 
-# A simple definition of the autoencoder that uses those same NN parameters
+# A simple definition of the autoencoder that uses those same neuralnet parameters
 def autoencoder():
   
-    NN = neural_network()
-    NN.set_input_and_expected_values('GA', autoencoder=True)
-    NN.initialize_values()
+    neuralnet = neural_network()
+    neuralnet.setin_n_exp_values('GA', autoencoder=True)
+    neuralnet.initialize_values()
 
     # Stop criterion
     finished_working = False
 
     while finished_working == False:
-        NN.forward_propogation()
-        NN.backward_propogation()
-        NN.update_weights_and_bias()
+        neuralnet.forward_propogation()
+        neuralnet.backward_propogation()
+        neuralnet.update_weights_and_bias()
 
-        max_change_1 = NN.matrix_1_errors.max()
-        min_change_1 = NN.matrix_1_errors.min()
-        max_change_2 = NN.matrix_2_errors.max()
-        min_change_2 = NN.matrix_2_errors.min()
+        greatestdelta_1 = neuralnet.matrix_1_errors.max()
+        smallestdelta_1 = neuralnet.matrix_1_errors.min()
+        greatestdelta_2 = neuralnet.matrix_2_errors.max()
+        smallestdelta_2 = neuralnet.matrix_2_errors.min()
 
-        if any([max_change_1 < 0.00001 and max_change_1 > 0,
-                min_change_1 > -.00001 and min_change_1 < 0]) or any(
-            [max_change_2 < 0.00001 and max_change_2 > 0,
-             min_change_2 > -0.00001 and min_change_2 < 0]):
+        if any([greatestdelta_1 < 0.00001 and greatestdelta_1 > 0,
+                smallestdelta_1 > -.00001 and smallestdelta_1 < 0]) or any(
+            [greatestdelta_2 < 0.00001 and greatestdelta_2 > 0,
+             smallestdelta_2 > -0.00001 and smallestdelta_2 < 0]):
             finished_working = True
 
-    print(NN.output_layer_output)
+    print(neuralnet.output_layer_output)
 
 def test():
     test_sequences = open('data/rap1-lieb-test.txt')
-    NN = neural_network(68, 23, 1)
-    NN.matrix_1_bias = np.loadtxt('connection_matrix_1.csv', delimiter=',')
-    NN.matrix_2_bias = np.loadtxt('connection_matrix_2.csv', delimiter=',')
+    neuralnet = neural_network(68, 23, 1)
+    neuralnet.matrix_1_bias = np.loadtxt('cnx_matrix_1.csv', delimiter=',')
+    neuralnet.matrix_2_bias = np.loadtxt('cnx_matrix_2.csv', delimiter=',')
 
-    NN_outputs = open('NN_predictions.txt', 'w')
+    neuralnet_outputs = open('neuralnet_predictions.txt', 'w')
 
     for test_seq in test_sequences:
-        NN.set_input_and_expected_values(test_seq.strip())
-        NN.forward_propogation()
-        NN_outputs.write('{}\t{}\n'.format(test_seq.strip(), NN.output_layer_output[0]))
+        neuralnet.setin_n_exp_values(test_seq.strip())
+        neuralnet.forward_propogation()
+        neuralnet_outputs.write('{}\t{}\n'.format(test_seq.strip(), neuralnet.output_layer_output[0]))
 
-    NN_outputs.close()
+    neuralnet_outputs.close()
 
 if __name__ == 'train':
     import docopt
     import numpy as np
     from Bio import SeqIO
     import copy
-    from .NNfxns import neural_network
+    from .neuralnetfxns import neural_network
 
     args = docopt.docopt(__doc__)
 
